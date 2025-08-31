@@ -1,5 +1,9 @@
 # Delete Operation
 
+```python
+from bookshelf.models import Book
+```
+
 ## Command Used
 
 ```python
