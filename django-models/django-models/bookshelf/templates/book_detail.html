@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ book.title }} - My Bookstore{% endblock %}
+
+{% block content %}
+<div class="book-detail">
+    <div class="book-image">
+        <img src="{% static 'images/book-placeholder.jpg' %}" alt="{{ book.title }}">
+    </div>
+    
+    <div class="book-info">
+        <h1>{{ book.title }}</h1>
+        <h2>by {{ book.author }}</h2>
+        
+        <div class="book-meta">
+            <p><strong>Genre:</strong> {{ book.genre|title }}</p>
+            <p><strong>Published:</strong> {{ book.published_date|date:"F d, Y" }}</p>
+            <p><strong>Pages:</strong> {{ book.pages|default:"Not specified" }}</p>
+            <p><strong>Price:</strong> ${{ book.price }}</p>
+            {% if book.rating %}
+                <p><strong>Rating:</strong> ⭐ {{ book.rating }}/5</p>
+            {% endif %}
+        </div>
+        
+        <div class="book-description">
+            <h3>Description</h3>
+            <p>{{ book.description|linebreaks }}</p>
+        </div>
+        
+        <div class="book-actions">
+            <button class="btn-primary">Add to Cart</button>
+            <button class="btn-secondary">Add to Wishlist</button>
+        </div>
+    </div>
+</div>
+
+<div class="back-to-list">
+    <a href="{% url 'book-list' %}">← Back to Book List</a>
+</div>
+{% endblock %}
