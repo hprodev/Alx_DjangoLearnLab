@@ -6,8 +6,8 @@ from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.urls import reverse_lazy
-from .models import Book, Library, Author
-
+from .models import Book, Author
+from .models import Library
 
 # Task 1: Function-based view to list all books
 def list_books(request):
