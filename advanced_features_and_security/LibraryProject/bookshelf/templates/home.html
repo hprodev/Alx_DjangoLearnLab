@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Welcome - My Bookstore{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1>Welcome to Our Bookstore! 📖</h1>
+    <p>Discover amazing books and expand your knowledge</p>
+    <a href="{% url 'book-list' %}" class="cta-button">Browse Books</a>
+</div>
+
+<div class="featured-books">
+    <h2>Featured Books</h2>
+    <div class="book-grid">
+        {% for book in featured_books %}
+            <div class="book-card">
+                <img src="{% static 'images/book-placeholder.jpg' %}" alt="{{ book.title }}">
+                <h3>{{ book.title|truncatechars:25 }}</h3>
+                <p>by {{ book.author }}</p>
+                <p class="price">${{ book.price }}</p>
+                <a href="{% url 'book-detail' book.id %}">View Details</a>
+            </div>
+        {% empty %}
+            <p>No featured books available at the moment.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

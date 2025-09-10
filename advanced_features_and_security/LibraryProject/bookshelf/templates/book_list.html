@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Books - My Bookstore{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Our Book Collection 📚</h1>
+    <p>Total books: {{ book_list|length }}</p>
+</div>
+
+<div class="search-filter">
+    <form method="get">
+        <input type="text" name="search" placeholder="Search books..." value="{{ request.GET.search }}">
+        <select name="genre">
+            <option value="">All Genres</option>
+            <option value="fiction" {% if request.GET.genre == 'fiction' %}selected{% endif %}>Fiction</option>
+            <option value="non-fiction" {% if request.GET.genre == 'non-fiction' %}selected{% endif %}>Non-Fiction</option>
+            <option value="mystery" {% if request.GET.genre == 'mystery' %}selected{% endif %}>Mystery</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+</div>
+
+<div class="book-list">
+    {% for book in book_list %}
+        <div class="book-item">
+            <div class="book-info">
+                <h3>
+                    <a href="{% url 'book-detail' book.id %}">
+                        {{ book.title|truncatechars:40 }}
+                    </a>
+                </h3>
+                <p class="author">by {{ book.author }}</p>
+                <p class="genre">Genre: {{ book.genre|title }}</p>
+                <p class="description">{{ book.description|truncatechars:100 }}</p>
+            </div>
+            <div class="book-meta">
+                <span class="price">${{ book.price }}</span>
+                <span class="rating">
+                    {% if book.rating %}
+                        ⭐ {{ book.rating }}/5
+                    {% else %}
+                        No ratings yet
+                    {% endif %}
+                </span>
+                <span class="published">{{ book.published_date|date:"Y" }}</span>
+            </div>
+        </div>
+    {% empty %}
+        <div class="no-books">
+            <p>No books found matching your criteria.</p>
+            <a href="{% url 'book-list' %}">View all books</a>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if book_list.has_other_pages %}
+    <div class="pagination">
+        {% if book_list.has_previous %}
+            <a href="?page={{ book_list.previous_page_number }}">← Previous</a>
+        {% endif %}
+        
+        <span class="current-page">
+            Page {{ book_list.number }} of {{ book_list.paginator.num_pages }}
+        </span>
+        
+        {% if book_list.has_next %}
+            <a href="?page={{ book_list.next_page_number }}">Next →</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}
