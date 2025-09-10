@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.http import HttpResponseForbidden
 from .models import Book, CustomUser
 from .forms import BookForm
+from .forms import ExampleForm
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def book_list(request):
