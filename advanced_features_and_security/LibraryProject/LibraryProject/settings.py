@@ -59,6 +59,17 @@ SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
+# Force HTTPS redirects
+SECURE_SSL_REDIRECT = True  # Redirects all HTTP requests to HTTPS
+
+# HTTP Strict Transport Security (HSTS) Settings
+SECURE_HSTS_SECONDS = 31536000  # 1 year - browsers will only access via HTTPS
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow domain to be preloaded in browsers' HSTS lists
+
+# Proxy SSL Header - for deployments behind reverse proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Cookie Security
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
