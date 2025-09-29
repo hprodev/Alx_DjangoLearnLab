@@ -112,7 +112,7 @@ class BookAPITestCase(TestCase):
             'author': self.author.id
         }
         
-        response = self.client.put(f'/api/books/{self.book1.id}/update/', data)
+        response = self.client.put(f'/api/books/update/{self.book1.id}/', data, content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
         # Verify update
@@ -130,13 +130,13 @@ class BookAPITestCase(TestCase):
             'author': self.author.id
         }
         
-        response = self.client.put(f'/api/books/{self.book1.id}/update/', data)
+        response = self.client.put(f'/api/books/update/{self.book1.id}/', data, content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         
         # Verify no update occurred
         self.book1.refresh_from_db()
         self.assertEqual(self.book1.title, 'Test Book 1')
-    
+
     def test_delete_book_authenticated(self):
         """
         Test deleting a book with authentication.
@@ -145,7 +145,7 @@ class BookAPITestCase(TestCase):
         # Authenticate
         self.client.login(username='testuser', password='testpass123')
         
-        response = self.client.delete(f'/api/books/{self.book1.id}/delete/')
+        response = self.client.delete(f'/api/books/delete/{self.book1.id}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Book.objects.count(), 1)  # One book remaining
     
@@ -154,7 +154,7 @@ class BookAPITestCase(TestCase):
         Test that unauthenticated users cannot delete books.
         Verifies permission controls for delete operations.
         """
-        response = self.client.delete(f'/api/books/{self.book1.id}/delete/')
+        response = self.client.delete(f'/api/books/delete/{self.book1.id}/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Book.objects.count(), 2)  # No books deleted
     
