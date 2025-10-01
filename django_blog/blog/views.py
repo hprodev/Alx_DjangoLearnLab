@@ -169,6 +169,27 @@ def add_comment(request, pk):
         'post': post
     })
 
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    """
+    Create a new comment for a specific post.
+    Only logged-in users can add comments.
+    """
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/add_comment.html'
+
+    def form_valid(self, form):
+        # attach the post and author before saving
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        form.instance.post = post
+        form.instance.author = self.request.user
+        messages.success(self.request, 'Comment added successfully!')
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # redirect back to the post detail page
+        return reverse_lazy('post-detail', kwargs={'pk': self.kwargs['pk']})
+
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """
