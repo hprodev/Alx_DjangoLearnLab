@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from . import views
+from . import views, PostByTagListView
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -23,5 +23,5 @@ urlpatterns = [
 
         # Search and Tag URLs
     path('search/', views.search_posts, name='search'),
-    path('tags/<str:tag_name>/', views.posts_by_tag, name='posts-by-tag'),
+    path("tags/<slug:tag_slug>/", PostByTagListView.as_view(), name="posts-by-tag")
 ]

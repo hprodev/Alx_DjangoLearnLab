@@ -250,16 +250,14 @@ def search_posts(request):
     })
 
 
-def posts_by_tag(request, tag_name):
+class PostByTagListView(ListView):
     """
     Display all posts with a specific tag.
-    
-    Args:
-        tag_name: The name of the tag to filter by
     """
-    posts = Post.objects.filter(tags__name=tag_name)
-    
-    return render(request, 'blog/posts_by_tag.html', {
-        'posts': posts,
-        'tag_name': tag_name
-    })
+    model = Post
+    template_name = 'blog/post_list.html'  # reuse your post list template
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        # filter posts by tag slug from the URL
+        return Post.objects.filter(tags__slug=self.kwargs['tag_slug'])
