@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.db.models import Q
 from .models import Post, Comment
 from .forms import CustomUserCreationForm, UserUpdateForm, CommentForm
 
@@ -87,6 +88,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     """
     model = Post
     template_name = 'blog/post_form.html'
+    fields = ['title', 'content', 'tags']
     fields = ['title', 'content']
     success_url = reverse_lazy('posts')
     
@@ -104,6 +106,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """
     model = Post
     template_name = 'blog/post_form.html'
+    fields = ['title', 'content', 'tags']
     fields = ['title', 'content']
     success_url = reverse_lazy('posts')
     
@@ -204,3 +207,38 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         """Redirect to the post detail page after deletion"""
         messages.success(self.request, 'Comment deleted successfully!')
         return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
+    
+def search_posts(request):
+    """
+    Search posts by title, content, or tags.
+    Uses Q objects for complex queries.
+    """
+    query = request.GET.get('q', '')
+    posts = Post.objects.none()
+    
+    if query:
+        posts = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    
+    return render(request, 'blog/search_results.html', {
+        'posts': posts,
+        'query': query
+    })
+
+
+def posts_by_tag(request, tag_name):
+    """
+    Display all posts with a specific tag.
+    
+    Args:
+        tag_name: The name of the tag to filter by
+    """
+    posts = Post.objects.filter(tags__name=tag_name)
+    
+    return render(request, 'blog/posts_by_tag.html', {
+        'posts': posts,
+        'tag_name': tag_name
+    })
