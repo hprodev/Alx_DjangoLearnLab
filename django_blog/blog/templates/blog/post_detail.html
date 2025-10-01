@@ -1,0 +1,70 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ post.title }} - Django Blog{% endblock %}
+
+{% block content %}
+<div class="post">
+    <h1>{{ post.title }}</h1>
+    <p class="post-meta">
+        By {{ post.author.username }} | {{ post.published_date|date:"F d, Y H:i" }}
+    </p>
+    <div class="post-content">
+        {{ post.content|linebreaks }}
+    </div>
+    
+    {% if user == post.author %}
+        <div class="post-actions">
+            <a href="{% url 'post-update' post.pk %}"><button>Edit Post</button></a>
+            <a href="{% url 'post-delete' post.pk %}"><button>Delete Post</button></a>
+        </div>
+    {% endif %}
+</div>
+
+<hr>
+
+<!-- Comments Section -->
+<div class="comments-section">
+    <h3>Comments ({{ comments.count }})</h3>
+    
+    {% if user.is_authenticated %}
+        <div class="add-comment">
+            <h4>Add a Comment</h4>
+            <form method="post" action="{% url 'add-comment' post.pk %}">
+                {% csrf_token %}
+                {{ comment_form.content }}
+                <button type="submit">Post Comment</button>
+            </form>
+        </div>
+    {% else %}
+        <p><a href="{% url 'login' %}">Login</a> to leave a comment.</p>
+    {% endif %}
+    
+    <div class="comments-list">
+        {% for comment in comments %}
+            <div class="comment">
+                <p class="comment-author">
+                    <strong>{{ comment.author.username }}</strong>
+                </p>
+                <p class="comment-date">
+                    {{ comment.created_at|date:"F d, Y H:i" }}
+                    {% if comment.created_at != comment.updated_at %}
+                        (edited)
+                    {% endif %}
+                </p>
+                <p>{{ comment.content|linebreaks }}</p>
+                
+                {% if user == comment.author %}
+                    <div class="comment-actions">
+                        <a href="{% url 'comment-update' comment.pk %}"><button>Edit</button></a>
+                        <a href="{% url 'comment-delete' comment.pk %}"><button>Delete</button></a>
+                    </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endfor %}
+    </div>
+</div>
+
+<a href="{% url 'posts' %}"><button>Back to Posts</button></a>
+{% endblock %}
