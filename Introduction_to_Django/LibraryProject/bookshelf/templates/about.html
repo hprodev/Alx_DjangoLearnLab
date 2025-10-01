@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - My Bookstore{% endblock %}
+
+{% block content %}
+<div class="about-page">
+    <h1>About Our Bookstore</h1>
+    
+    <div class="about-content">
+        <div class="about-text">
+            <p>Welcome to My Bookstore, where stories come alive! We've been serving book lovers since 2020.</p>
+            <p>Our mission is to connect readers with their perfect books and foster a love of reading in our community.</p>
+            
+            <h2>What We Offer</h2>
+            <ul>
+                <li>Carefully curated selection of books</li>
+                <li>Expert recommendations</li>
+                <li>Community reading events</li>
+                <li>Fast and reliable shipping</li>
+            </ul>
+        </div>
+        
+        <div class="about-stats">
+            <div class="stat">
+                <h3>{{ total_books|default:"1000+" }}</h3>
+                <p>Books Available</p>
+            </div>
+            <div class="stat">
+                <h3>{{ happy_customers|default:"5000+" }}</h3>
+                <p>Happy Customers</p>
+            </div>
+            <div class="stat">
+                <h3>{{ years_serving|default:"4" }}</h3>
+                <p>Years Serving</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

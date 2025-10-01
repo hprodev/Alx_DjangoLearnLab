@@ -5,16 +5,16 @@ from .models import Book
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     # Display these fields in the admin list view
-    list_display = ('title', 'author', 'publication_year')
+    list_display = ('title', 'author', 'price', 'genre', 'published_date', 'rating')
     
     # Add filters in the right sidebar
-    list_filter = ('author', 'publication_year')
+    list_filter = ('genre', 'published_date')
     
     # Add search functionality
     search_fields = ('title', 'author')
     
     # Make these fields editable directly in the list view
-    list_editable = ('publication_year',)
+    list_editable = ('price','rating',)
     
     # Add ordering
     ordering = ('title',)
@@ -22,13 +22,13 @@ class BookAdmin(admin.ModelAdmin):
     # Customize the form layout
     fieldsets = (
         ('Book Information', {
-            'fields': ('title', 'author', 'publication_year'),
+            'fields': ('title', 'author', 'published_year'),
             'description': 'Enter the basic information about the book.'
         }),
     )
     
     # Add pagination
-    list_per_page = 10
+    list_per_page = 10 
     
     # Add custom actions
     actions = ['mark_as_classic']
