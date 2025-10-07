@@ -1,12 +1,13 @@
 from django.shortcuts import render
-
-# Create your views here.
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.contrib.auth import get_user_model
 from .serializers import UserRegistrationSerializer, UserSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status
+from rest_framework.response import Response
 
 User = get_user_model()
 
@@ -59,3 +60,57 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         """Return the current logged-in user"""
         return self.request.user
+    
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def follow_user(request, user_id):
+    """
+    Follow another user.
+    """
+    try:
+        user_to_follow = User.objects.get(id=user_id)
+        
+        # Can't follow yourself
+        if user_to_follow == request.user:
+            return Response(
+                {'error': 'You cannot follow yourself'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Add to following list
+        request.user.following.add(user_to_follow)
+        
+        return Response(
+            {'message': f'You are now following {user_to_follow.username}'},
+            status=status.HTTP_200_OK
+        )
+    
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'User not found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def unfollow_user(request, user_id):
+    """
+    Unfollow a user.
+    """
+    try:
+        user_to_unfollow = User.objects.get(id=user_id)
+        
+        # Remove from following list
+        request.user.following.remove(user_to_unfollow)
+        
+        return Response(
+            {'message': f'You have unfollowed {user_to_unfollow.username}'},
+            status=status.HTTP_200_OK
+        )
+    
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'User not found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
