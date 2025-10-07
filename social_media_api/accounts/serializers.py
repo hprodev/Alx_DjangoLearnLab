@@ -9,7 +9,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     Serializer for user registration.
     Handles creating new users with username, email, password.
     """
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField()
     
     class Meta:
         model = User
