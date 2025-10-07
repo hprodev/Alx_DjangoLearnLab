@@ -65,20 +65,25 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 @permission_classes([permissions.IsAuthenticated])
 def follow_user(request, user_id):
     """
-    Follow another user.
+    Follow another user and create notification.
     """
     try:
         user_to_follow = User.objects.get(id=user_id)
         
-        # Can't follow yourself
         if user_to_follow == request.user:
             return Response(
                 {'error': 'You cannot follow yourself'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Add to following list
         request.user.following.add(user_to_follow)
+        
+        from notifications.models import Notification
+        Notification.objects.create(
+            recipient=user_to_follow,
+            actor=request.user,
+            verb='started following you'
+        )
         
         return Response(
             {'message': f'You are now following {user_to_follow.username}'},
