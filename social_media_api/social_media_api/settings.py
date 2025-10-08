@@ -20,6 +20,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = False #config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+PORT = config('PORT', default='8000')
 
 
 # Application definition
@@ -129,18 +130,14 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# WhiteNoise configuration for serving static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Security Settings for Production
 if not DEBUG:
     # HTTPS settings
     SECURE_SSL_REDIRECT = True

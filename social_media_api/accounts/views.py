@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 User = get_user_model()
 
-class RegisterView(generics.CreateAPIView):
+class RegisterView(generics.GenericAPIView):
     """
     View for user registration.
     Creates new user and returns authentication token.
