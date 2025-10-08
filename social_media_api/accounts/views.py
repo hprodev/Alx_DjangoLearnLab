@@ -9,18 +9,18 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.response import Response
 
-User = get_user_model()
+CustomUser = get_user_model()
 
 class RegisterView(generics.GenericAPIView):
     """
     View for user registration.
     Creates new user and returns authentication token.
     """
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserRegistrationSerializer
     permission_classes = [permissions.AllowAny]
     
-    def create(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -68,7 +68,7 @@ def follow_user(request, user_id):
     Follow another user and create notification.
     """
     try:
-        user_to_follow = User.objects.get(id=user_id)
+        user_to_follow = CustomUser.objects.get(id=user_id)
         
         if user_to_follow == request.user:
             return Response(
@@ -90,7 +90,7 @@ def follow_user(request, user_id):
             status=status.HTTP_200_OK
         )
     
-    except User.DoesNotExist:
+    except CustomUser.DoesNotExist:
         return Response(
             {'error': 'User not found'},
             status=status.HTTP_404_NOT_FOUND
@@ -104,7 +104,7 @@ def unfollow_user(request, user_id):
     Unfollow a user.
     """
     try:
-        user_to_unfollow = User.objects.get(id=user_id)
+        user_to_unfollow = CustomUser.objects.get(id=user_id)
         
         # Remove from following list
         request.user.following.remove(user_to_unfollow)
@@ -114,7 +114,7 @@ def unfollow_user(request, user_id):
             status=status.HTTP_200_OK
         )
     
-    except User.DoesNotExist:
+    except CustomUser.DoesNotExist:
         return Response(
             {'error': 'User not found'},
             status=status.HTTP_404_NOT_FOUND
